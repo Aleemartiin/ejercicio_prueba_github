@@ -1,0 +1,2 @@
+1234,PARACETYA,NA,17.0,55,Medicamento,AGUA,NA,ANALGESICOS
+123,tyr,gfh,45.0,3,Medicamento,fgfg,fgfd,ANTITUSIVOS

@@ -63,14 +63,18 @@ public class Cliente {
 	}
 
 	public void setBaja(boolean baja) {
-		this.baja = true;
+		this.baja = baja;
+	}
+
+	public boolean getBaja() {
+		return baja;
 	}
 
 	// Método toString para representar el objeto como una cadena de texto
 	@Override
 	public String toString() {
-		return "Cliente{" + "id='" + id + '\'' + ", nombre='" + nombre + '\'' + ", direccion='" + direccion + '\''
-				+ ", telefono='" + telefono + '\'' + ", baja=" + baja + '}';
+		return "Cliente ID: " + id + ", " + "Nombre: " + nombre + ", " + "Direccion: " + direccion + ", " + "Teléfono: "
+				+ telefono;
 	}
 
 	// Método para mostrar el menú y gestionar las opciones
@@ -87,7 +91,6 @@ public class Cliente {
 			System.out.println("6. Salir.");
 			System.out.print("Seleccione una opción: ");
 			opcion = sn.nextInt();
-			opcion = ValidarDatos.validarInt(opcion);
 			sn.nextLine(); // Limpiar el buffer de entrada
 
 			switch (opcion) {
@@ -111,40 +114,48 @@ public class Cliente {
 				break;
 			default:
 				System.out.println("Valor no válido.");
-				opcion = ValidarDatos.validarInt(opcion);
 			}
-		} while (opcion != 6 );
+		} while (opcion != 6);
 	}
 
 	// Método para dar de alta un cliente nuevo
 	private static void darDeAltaCliente(ArrayList<Cliente> clientes) {
 		System.out.println("Introduzca el ID del cliente:");
 		String id = sn.nextLine();
-		while (!ValidarDatos.validarNif(id) || ValidarDatos.clienteRepetido(id, clientes)) {
-	        if (!ValidarDatos.validarNif(id)) {
-	            System.out.println("Por favor, introduzca un NIF válido: ");
-	        } else {
-	            System.out.println("El NIF ya está en uso. Por favor, introduzca otro: ");
-	        }
-	        id = sn.nextLine();
-	    }
-		
+		while (!ValidarDatos.validarNif(id)) {
+			System.out.println("Por favor, introduzca un ID válido: ");
+			id = sn.nextLine();
+		}
+		for (Cliente cliente : clientes) {
+			if (cliente.getId().equalsIgnoreCase(id)) {
+				if (cliente.getBaja() == true) {
+					// Si el cliente existe y está dado de baja, darlo de alta
+					cliente.setBaja(false);
+					System.out.println("Cliente dado de alta correctamente.");
+					return;
+				} else {
+					System.out.println("El cliente ya está registrado.");
+					return;
+				}
+			}
+		}
+
 		System.out.println("Introduzca el nombre del cliente:");
 		String nombre = sn.nextLine();
-		nombre=ValidarDatos.validarString(nombre);
+		nombre = ValidarDatos.validarString(nombre);
 		System.out.println("Introduzca la dirección del cliente:");
 		String direccion = sn.nextLine();
-		direccion=ValidarDatos.validarString(direccion);
+		direccion = ValidarDatos.validarString(direccion);
 		System.out.println("Introduzca el teléfono del cliente:");
 		String telefono = sn.nextLine();
-		telefono=ValidarDatos.validarString(telefono);
+		telefono = ValidarDatos.validarString(telefono);
 
 		Cliente nuevoCliente = new Cliente(id, nombre, direccion, telefono);
 		clientes.add(nuevoCliente);
 		System.out.println("Cliente añadido correctamente.");
 	}
 
-	// Método para buscar un cliente por su ID (DNI)
+	// Método para buscar un cliente por ID
 	private static void buscarClientePorDNI(ArrayList<Cliente> clientes) {
 		System.out.println("Introduzca el ID del cliente a buscar:");
 		String idBuscar = sn.nextLine();
@@ -153,10 +164,15 @@ public class Cliente {
 			idBuscar = sn.nextLine();
 		}
 		for (Cliente cliente : clientes) {
-			if (cliente.getId().equals(idBuscar)) {
-				System.out.println("Cliente encontrado:");
-				System.out.println(cliente);
-				return;
+			if (cliente.getId().equalsIgnoreCase(idBuscar)) {
+				if (cliente.getBaja() == true) {
+					System.out.println("El cliente se encuentra dado de baja.");
+					return;
+				} else {
+					System.out.println("Cliente encontrado:");
+					System.out.println(cliente);
+					return;
+				}
 			}
 		}
 		System.out.println("Cliente no encontrado.");
@@ -172,8 +188,8 @@ public class Cliente {
 		}
 
 		for (Cliente cliente : clientes) {
-			if (cliente.getId().equals(idBaja)) {
-				cliente.setBaja(true);
+			if (cliente.getId().equalsIgnoreCase(idBaja)) {
+				cliente.setBaja(true); // Establecer el cliente como dado de baja
 				System.out.println("Cliente dado de baja correctamente.");
 				return;
 			}
@@ -184,45 +200,55 @@ public class Cliente {
 	// Método para modificar los datos de un cliente
 	private static void modificarDatosCliente(ArrayList<Cliente> clientes) {
 		int aux;
+		int control = 0;
 		System.out.println("Introduzca el ID del cliente a modificar:");
 		String idModificar = sn.nextLine();
-		while (!ValidarDatos.validarNif(idModificar) || ValidarDatos.clienteRepetido(idModificar, clientes)) {
-	        if (!ValidarDatos.validarNif(idModificar)) {
-	            System.out.println("Por favor, introduzca un NIF válido: ");
-	        } else {
-	            System.out.println("El NIF ya está en uso. Por favor, introduzca otro: ");
-	        }
-	        idModificar = sn.nextLine();
-	    }
+		while (!ValidarDatos.validarNif(idModificar)) {
+			System.out.println("Por favor, introduzca un NIF válido: ");
+			idModificar = sn.nextLine();
+		}
+
 		for (Cliente cliente : clientes) {
-			if (cliente.getId().equals(idModificar)) {
-				System.out.println("¿Qué dato quiere modificar?");
-				System.out.println("1.Nombre");
-				System.out.println("2.Direccion");
-				System.out.println("3.Telefono");
-				aux = sn.nextInt();
-				while (aux != 1 && aux != 2 && aux != 3) {
-					switch (aux) {
-					case 1:
-						System.out.println("Introduzca el nuevo nombre del cliente:");
-						cliente.setNombre(sn.nextLine());
-						System.out.println("Datos del cliente modificados correctamente.");
-					case 2:
-						System.out.println("Introduzca la nueva dirección del cliente:");
-						cliente.setDireccion(sn.nextLine());
-						System.out.println("Datos del cliente modificados correctamente.");
-					case 3:
-						System.out.println("Introduzca el nuevo teléfono del cliente:");
-						cliente.setTelefono(sn.nextLine());
-						System.out.println("Datos del cliente modificados correctamente.");
-					default:
-						System.out.println("Introduce un dato válido:");
-						aux = sn.nextInt();
+			if (cliente.getId().equalsIgnoreCase(idModificar)) {
+				control = 1;
+				if (cliente.getBaja() == true) {
+					System.out.println("El cliente se encuentra dado de baja.");
+					return;
+				} else {
+					System.out.println("¿Qué dato quiere modificar?");
+					System.out.println("1.Nombre");
+					System.out.println("2.Direccion");
+					System.out.println("3.Telefono");
+					System.out.println("4.Salir");
+					aux = sn.nextInt();
+					while (aux < 1 || aux > 4) {
+						switch (aux) {
+						case 1:
+							System.out.println("Introduzca el nuevo nombre del cliente:");
+							cliente.setNombre(sn.nextLine());
+							System.out.println("Datos del cliente modificados correctamente.");
+						case 2:
+							System.out.println("Introduzca la nueva dirección del cliente:");
+							cliente.setDireccion(sn.nextLine());
+							System.out.println("Datos del cliente modificados correctamente.");
+						case 3:
+							System.out.println("Introduzca el nuevo teléfono del cliente:");
+							cliente.setTelefono(sn.nextLine());
+							System.out.println("Datos del cliente modificados correctamente.");
+						case 4:
+							System.out.println("Saliendo...");
+							break;
+						default:
+							System.out.println("Introduce un dato válido:");
+							aux = sn.nextInt();
+						}
 					}
 				}
 			}
 		}
-		System.out.println("Cliente no encontrado.");
+		if (control != 1) {
+			System.out.println("Cliente no encontrado.");
+		}
 	}
 
 	// Método para listar todos los clientes
@@ -232,7 +258,9 @@ public class Cliente {
 		} else {
 			System.out.println("Listado de clientes:");
 			for (Cliente cliente : clientes) {
-				System.out.println(cliente);
+				if (!cliente.getBaja()) {
+					System.out.println(cliente);
+				}
 			}
 		}
 	}

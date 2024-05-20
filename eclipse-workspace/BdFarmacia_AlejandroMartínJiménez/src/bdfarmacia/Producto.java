@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 public abstract class Producto {
 	// Atributos
-	private static ArrayList<Producto> listaProductos = new ArrayList<>();
 	private static Scanner sn = new Scanner(System.in);
 	private String codigo;
 	private String nombre;
@@ -31,7 +30,7 @@ public abstract class Producto {
 	}
 
 	// Métodos y funciones
-	public static void gestionarProductos() {
+	public static void gestionarProductos(ArrayList<Producto> productos) {
 		int opc2;
 		int opcion;
 		do {
@@ -43,8 +42,7 @@ public abstract class Producto {
 			System.out.println("6. Salir");
 			System.out.print("Seleccione una opción: ");
 			opcion = sn.nextInt();
-			opcion = ValidarDatos.validarInt(opcion);
-			sn.nextLine(); // Consumir la nueva línea después de nextInt()
+			sn.nextLine();
 
 			switch (opcion) {
 			case 1:
@@ -53,30 +51,30 @@ public abstract class Producto {
 					System.out.println("1. ParaFarmacia");
 					System.out.println("2. Medicamento");
 					opc2 = sn.nextInt();
-					opc2 = ValidarDatos.validarInt(opc2);
 					switch (opc2) {
 					case 1:
-						// Lógica para dar de alta ParaFarmacia
+						ParaFarmacia.darDeAltaParaFarmacia(productos);
 						break;
 					case 2:
-						// Lógica para dar de alta Medicamento
+						Medicamento.darDeAltaMedicamento(productos);
 						break;
 					default:
-						System.out.println("Opción no válida. Inténtelo de nuevo.");
+						System.out.println("Opción no válida. Introduzca de nuevo:");
+						opc2 = sn.nextInt();
 					}
 				} while (opc2 != 1 && opc2 != 2);
 				break;
 			case 2:
-				buscarProducto();
+				buscarProducto(productos);
 				break;
 			case 3:
-				darDeBajaProducto();
+				darDeBajaProducto(productos);
 				break;
 			case 4:
-				modificarProducto();
+				modificarProducto(productos);
 				break;
 			case 5:
-				listarProductos();
+				listarProductos(productos);
 				break;
 			case 6:
 				System.out.println("Saliendo del gestor de productos...");
@@ -87,12 +85,11 @@ public abstract class Producto {
 		} while (opcion != 6);
 	}
 
-	private static void buscarProducto() {
+	private static void buscarProducto(ArrayList<Producto> productos) {
 		System.out.print("Introduzca el código del producto a buscar: ");
 		String codigo = sn.nextLine();
-		
-		
-		for (Producto producto : listaProductos) {
+
+		for (Producto producto : productos) {
 			if (producto.comprobarCodigo(codigo)) {
 				System.out.println("Producto encontrado:");
 				System.out.println(producto);
@@ -102,24 +99,24 @@ public abstract class Producto {
 		System.out.println("Producto no encontrado.");
 	}
 
-	private static void darDeBajaProducto() {
-		System.out.print("Introduzca el código del producto a dar de baja: ");
-		String codigo = sn.nextLine();
-		for (Producto producto : listaProductos) {
-			if (producto.comprobarCodigo(codigo)) {
-				listaProductos.remove(producto);
-				System.out.println("Producto eliminado correctamente.");
-				return;
-			}
-		}
-		System.out.println("Producto no encontrado.");
+	private static void darDeBajaProducto(ArrayList<Producto> productos) {
+	    System.out.print("Introduzca el código del producto a dar de baja: ");
+	    String codigo = sn.nextLine();
+	    for (Producto producto : productos) {
+	        if (producto.comprobarCodigo(codigo)) {
+	            productos.remove(producto);
+	            System.out.println("Producto eliminado correctamente.");
+	            return;
+	        }
+	    }
+	    System.out.println("Producto no encontrado.");
 	}
 
-	private static void modificarProducto() {
+	private static void modificarProducto(ArrayList<Producto> productos) {
 		int opcion;
 		System.out.print("Introduzca el código del producto a modificar: ");
 		String codigo = sn.nextLine();
-		for (Producto producto : listaProductos) {
+		for (Producto producto : productos) {
 			if (producto.comprobarCodigo(codigo)) {
 
 				do {
@@ -147,7 +144,7 @@ public abstract class Producto {
 						break;
 					default:
 						System.out.println("Introduce un dato válido:");
-						sn.nextLine(); // Consumir la nueva línea después de nextInt()
+						sn.nextLine();
 					}
 				} while (opcion != 1 && opcion != 2 && opcion != 3);
 
@@ -158,12 +155,12 @@ public abstract class Producto {
 
 	}
 
-	private static void listarProductos() {
-		if (listaProductos.isEmpty()) {
+	private static void listarProductos(ArrayList<Producto> productos) {
+		if (productos.isEmpty()) {
 			System.out.println("No hay productos en la lista.");
 		} else {
 			System.out.println("Lista de productos:");
-			for (Producto producto : listaProductos) {
+			for (Producto producto : productos) {
 				System.out.println(producto);
 			}
 		}
@@ -229,7 +226,8 @@ public abstract class Producto {
 
 	@Override
 	public String toString() {
-		return "Producto{" + "codigo='" + codigo + '\'' + ", nombre='" + nombre + '\'' + ", descripcion='" + descripcion
-				+ '\'' + ", precio=" + precio + ", unidades=" + unidades + '}';
+		return "Producto " + "\n" + "ID: " + codigo + "\n" + "Nombre: " + nombre + "\n" + "Descripción: " + descripcion
+				+ "\n" + "Precio: " + precio + "\n" + "Stock: " + unidades;
 	}
+
 }

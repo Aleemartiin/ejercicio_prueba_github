@@ -1,0 +1,7 @@
+/.metadata/
+Vamos a hacer que Git deje fuera del seguimiento las copias de seguridad (archivos
+con la extensión .bak) y las clases compiladas de Java (archivos con la extensión
+.class).
+
+#Ignora las clases compiladas.
+*.class

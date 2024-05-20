@@ -11,7 +11,7 @@ public class ValidarDatos {
 		// Constructor vacío
 	}
 
-	// Método para validar un NIF (Número de Identificación Fiscal)
+	// Método para validar un DNI
 	public static boolean validarNif(String nif) {
 		if (nif.length() != 9) {
 			return false;
@@ -27,7 +27,7 @@ public class ValidarDatos {
 	
 	public static boolean clienteRepetido(String id, ArrayList<Cliente> clientes) {
 	    for (Cliente cliente : clientes) {
-	        if (cliente.getId().equals(id)) {
+	        if (cliente.getId().equalsIgnoreCase(id)) {
 	            return true;
 	        }
 	    }
@@ -44,7 +44,7 @@ public class ValidarDatos {
 	// Función para validar si un String no está vacío
     public static String validarString(String cadena) {
         while (cadena == null || cadena.trim().isEmpty()) {
-            System.out.println("Error: El valor no puede estar vacío.");
+            System.out.println("El valor no puede estar vacío.");
             System.out.print("Por favor, ingrese nuevamente: ");
             cadena = sn.nextLine();
         }
@@ -52,11 +52,20 @@ public class ValidarDatos {
     }
 
     // Función para validar si un Integer no está vacío y no es cero
-    public static int validarInt(int numero) {
+        public static int validarInt(int numero) {
+        	while (numero <= 0) {
+                System.out.print("Por favor, ingrese un valor positivo: ");
+                numero = sn.nextInt();
+                sn.nextLine();
+            }
+            return numero;
+        }
+    
+    public static double validarDouble(double numero) {
         while (numero <= 0) {
             System.out.print("Por favor, ingrese un valor positivo: ");
-            numero = sn.nextInt();
-            sn.nextLine(); // Consumir la nueva línea después de nextInt()
+            numero = sn.nextDouble();
+            sn.nextLine();
         }
         return numero;
     }

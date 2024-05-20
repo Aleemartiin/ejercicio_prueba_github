@@ -1,0 +1,2 @@
+eclipse.preferences.version=1
+prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\n<watchExpressions>\n    <expression enabled\="true" text\="buscarHorizontalNormalBoleana\=\=true"/>\n    <expression enabled\="true" text\="buscarHorizontalInvertidaBoleana\=\=true"/>\n    <expression enabled\="true" text\="buscarVerticalNormalBoleana\=\=true"/>\n    <expression enabled\="true" text\="buscarVerticalInvertidaBoleana\=\=true&\#10;&\#10;"/>\n</watchExpressions>\n

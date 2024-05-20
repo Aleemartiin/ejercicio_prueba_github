@@ -1,0 +1,4 @@
+INDEX VERSION 1.134+/home/kevin/Escritorio/Grado/JAVA/SopaDeLetra/.metadata/.plugins/org.eclipse.jdt.core
+3939171498.index
+1865797976.index
+836825602.index

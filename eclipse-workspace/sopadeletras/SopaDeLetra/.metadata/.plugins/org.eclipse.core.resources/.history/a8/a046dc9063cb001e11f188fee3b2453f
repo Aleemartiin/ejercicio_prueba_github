@@ -1,0 +1,501 @@
+/**
+ * @author kevin Giovanny Ross Cordoba
+ */
+
+package sopaDeLetra;
+
+import java.util.Scanner;
+
+public class Funcion {
+
+	public static void main(String[] args) {
+
+
+		Scanner entrada = new Scanner(System.in);
+		String palabra1 = "", palabra2 = "", palabra3 = "", palabra4 = "";
+		char sopaDeLetras[][] = new char[10][10];
+		int i = 0, j = 0;
+		final char VACIO = '-';
+
+		System.out.println("===================================");
+		System.out.println("         MENÚ SOPA DE LETRAS       ");
+		System.out.println("===================================");
+		System.out.println("   BIENVENIDO A LA SOPA DE LETRAS  ");
+		System.out.println("\n1. AGREGAR  \"4\" PALABRAS         ");
+		System.out.println("2. PALABRAS DE \"3\" CARACTERES MÍNIMO");
+		System.out.println("3. PALABRAS DE \"5\" CARACTERES MÁXIMO");
+		System.out.println("\nEsto es para meyor efectividad del juego");
+		System.out.println("A la hora de buscar la palabra.\n");
+
+		// Se rellena en VACIO="-" la sopa de letra.
+		for (i = 0; i < sopaDeLetras.length; i++) {
+			for (j = 0; j < sopaDeLetras[0].length; j++) {
+				sopaDeLetras[i][j] = VACIO;
+			}
+		}
+
+		System.out.println("         ​​​🆂🅾🅿🅰 🅳🅴 🅻🅴🆃🆁🅰🆂​​        ");
+		generarSopa(sopaDeLetras);
+
+		boolean palabrasAceptadas;
+		do {
+			palabrasAceptadas = true;
+
+			// Se guardan las palabras en en mayúscula "toUpperCase"
+			// y se quitan los espacios "trim"
+			System.out.print("\nDigite la palabra 1: ");
+			palabra1 = entrada.nextLine().toUpperCase().trim();
+			System.out.print("Digite la palabra 2: ");
+			palabra2 = entrada.nextLine().toUpperCase().trim();
+			System.out.print("Digite la palabra 3: ");
+			palabra3 = entrada.nextLine().toUpperCase().trim();
+			System.out.print("Digite la palabra 4: ");
+			palabra4 = entrada.nextLine().toUpperCase().trim();
+
+			if (palabra1.length() > 5 || palabra2.length() > 5 || palabra3.length() > 5 || palabra4.length() > 5) {
+				palabrasAceptadas = false;
+				System.out.println("\nAlgúna palabra o todas las palabras ");
+				System.out.println("tienen más de 5 caracteres");
+				System.out.println("La longitud máxima es de \"5\" ");
+				System.out.println("\nIntentelo de nuevo: ");
+			} else if ((palabra1.length() < 3 || palabra2.length() < 3 || palabra3.length() < 3
+					|| palabra4.length() < 3)) {
+				palabrasAceptadas = false;
+				System.out.println("\nAlgúna palabra o todas las palabras ");
+				System.out.println("son menores de 3 caracteres");
+				System.out.println("La longitud mínima es de \"3\" ");
+				System.out.println("\nIntentelo de nuevo: ");
+			} else if (palabra1.isEmpty() || palabra2.isEmpty() || palabra3.isEmpty() || palabra4.isEmpty()) {
+				palabrasAceptadas = false;
+				System.out.println("\nAlgúna palabra o todas las palabras ");
+				System.out.println("Están vacías");
+				System.out.println("\nIntentelo de nuevo: ");
+			}
+		} while (!palabrasAceptadas);
+
+		int fila = 0;
+		int columna = 0;
+
+		// PALABRAS AÑADIDAS
+		// horinzontal normal
+		do {
+			fila = (int) (Math.random() * 10);
+			columna = (int) (Math.random() * 10);
+
+			if (revisionHorizontal(columna, palabra1, sopaDeLetras)) {
+				colocarPalabraHorizontal(fila, columna, sopaDeLetras, palabra1, 1);
+			}
+		} while (!revisionHorizontal(columna, palabra1, sopaDeLetras));
+
+		añadirPalabrasHorizontales(palabra2, sopaDeLetras, 2); // Añade la palabra2 Horizontal Invertida
+		añadirPalabrasVerticales(palabra3, sopaDeLetras, 3); // Añade la palabra3 Vertical normal
+		añadirPalabrasVerticales(palabra4, sopaDeLetras, 4);// Añade la palabra4 Vertical Invertida
+		////////////////////////////////////////////////////////////
+
+		generarSopa(sopaDeLetras); // Sopa de letra con las 4 primeras palabras introduccidas
+		rellenarDeLetrasAscii(sopaDeLetras); // Sopa de letras rellena de letrasAscii pero no muestra el resultado
+		generarSopa(sopaDeLetras); // sopa de letra con las 4 primeras palabras introduccidas + letrasAscii
+		
+		int contador=0;
+		boolean salir=false;
+		String seguirJugando = "";
+		String palabraBuscada = "";
+		
+		do {	
+			System.out.print("\nIntroduce la palabra a buscar: ");
+			palabraBuscada = entrada.nextLine().toUpperCase().trim();
+			
+			if (contador==4) {
+					salir=true;
+			}
+			
+			if (!salir) {
+				if (palabraBuscada.equals(palabra1) || palabraBuscada.equals(palabra2) 
+					|| palabraBuscada.equals(palabra3) || palabraBuscada.equals(palabra4))  {
+						System.out.println("La palabra " + palabraBuscada + " SÍ se encuentra en la sopa de letras"); 
+						
+						if(buscarHorizontalNormal(sopaDeLetras, palabraBuscada)) {
+							++contador;
+						}
+				       
+				       if(buscarHorizontalInvertida(sopaDeLetras, palabraBuscada) ) {
+				    	   ++contador;
+				       }
+				       
+				        if (buscarVerticalNormal(sopaDeLetras, palabraBuscada) ) {
+				        	++contador;
+				        }
+						
+						if (buscarVerticalInvertida(sopaDeLetras, palabraBuscada) ) {
+							++contador;
+						}
+						generarSopa(sopaDeLetras);
+										
+					} else {
+						System.out.println("La palabra " + palabraBuscada + " NO se encuentra en la sopa de letras");
+					}
+					
+					do {
+						System.out.print("\n¿Quieres seguir jugando? (SI/NO): ");
+						seguirJugando = entrada.nextLine().toUpperCase().trim();
+				
+						if (seguirJugando.equals("SI")) {
+							salir = false;
+						} else if (seguirJugando.equals("NO")) {
+							salir = true;
+						}
+					} while (!(seguirJugando.equals("SI") || seguirJugando.equals("NO")));
+			  }
+		
+			// se repite si seguirJugando toma valores falsos
+		} while (!salir);
+
+		// Si todas las palabras son iguales y se encunetran todas
+		if (palabraBuscada.equals(palabra1) && palabraBuscada.equals(palabra2) && palabraBuscada.equals(palabra3)
+				&& palabraBuscada.equals(palabra4)) {
+			System.out.println("\nYa se encontraron todas las palabras.");
+			System.out.println("\nGame over....");
+		} else if (salir) { // si el usuario quiso salir mandar este mensaje
+			System.out.println("\nAdios....");
+			System.out.println("\nYa se encontraron todas las palabras.");
+		}
+
+		entrada.close();
+	} // MAIN//////////////////////////////////////////////////////////////////////////////////
+
+	// FUNCIONES//////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Resive dos palabras para colocarse en la sopa de letras de forma Horizontal ,
+	 * la forma de colocarse se diferencia en "palabraN", que es el número de la
+	 * palabra si es "1" horizontal normal si es "2" horizontal invertida
+	 * 
+	 * @param palabra
+	 * @param sopaDeLetras
+	 * @param palabraN
+	 */
+	public static void añadirPalabrasHorizontales(String palabra, char[][] sopaDeLetras, int palabraN) {
+		int fila = 0;
+		int columna = 0;
+		int palabraLength = 0;
+
+		do {
+			fila = (int) (Math.random() * 10);
+			columna = (int) (Math.random() * 10);
+
+			if (revisionHorizontal(columna, palabra, sopaDeLetras)) {
+				palabraLength = sePuedeColocarPalabraHorizontal(fila, columna, palabra, sopaDeLetras);
+				if (palabraLength == palabra.length()) {
+					colocarPalabraHorizontal(fila, columna, sopaDeLetras, palabra, palabraN);
+				}
+			}
+		} while (!revisionHorizontal(columna, palabra, sopaDeLetras) || palabraLength != palabra.length());
+	}
+
+	/**
+	 * Resive dos palabras para colocarse en la sopa de letras de forma vertical, la
+	 * forma de colocarse se diferencia en "palabraN", que es el número de la
+	 * palabra si es "3" vertical normal si es "4" vertical invertida
+	 * 
+	 * @param palabra
+	 * @param sopaDeLetras
+	 * @param palabraN
+	 */
+	public static void añadirPalabrasVerticales(String palabra, char[][] sopaDeLetras, int palabraN) {
+		int fila = 0;
+		int columna = 0;
+		int palabraLength = 0;
+
+		do {
+			fila = (int) (Math.random() * 10);
+			columna = (int) (Math.random() * 10);
+
+			if (revisionVertical(fila, palabra, sopaDeLetras)) {
+				palabraLength = sePuedeColocarPalabraVertical(fila, columna, palabra, sopaDeLetras);
+				if (palabraLength == palabra.length()) {
+					colocarPalabraVertical(fila, columna, sopaDeLetras, palabra, palabraN);
+				}
+			}
+		} while (!revisionVertical(fila, palabra, sopaDeLetras) || palabraLength != palabra.length());
+	}
+
+	/**
+	 * Busca la palabra y la tacha con vacio
+	 * 
+	 * @param sopaDeLetras
+	 * @param palabraBuscada
+	 * @return true, si la encuntra false, si no la encunetra
+	 */
+	public static boolean buscarVerticalInvertida(char sopaDeLetras[][], String palabraBuscada) {
+		int i = 0, j = 0, k = 0;
+		final char VACIO = '-';
+		
+		for (j = 0; j < sopaDeLetras[0].length; j++) {
+			for (i = sopaDeLetras.length - 1; i >= 1; i--) {
+				if (sopaDeLetras[i][j] == palabraBuscada.charAt(0) && sopaDeLetras[i - 1][j] == palabraBuscada.charAt(1)
+						&& sopaDeLetras[i - 2][j] == palabraBuscada.charAt(2)) {
+					for (k = i; k >= i - palabraBuscada.length() + 1 && k >= 1; k--) {
+						sopaDeLetras[k][j] = VACIO;
+					}
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Busca la palabra y la tacha con vacio
+	 * 
+	 * @param sopaDeLetras
+	 * @param palabraBuscada
+	 * @return true, si la encuntra false, si no la encunetra
+	 */
+	public static boolean buscarVerticalNormal(char sopaDeLetras[][], String palabraBuscada) {
+		int i = 0, j = 0;
+		final char VACIO = '-';
+
+		for (j = 0; j < sopaDeLetras[0].length; j++) {
+			for (i = 0; i < sopaDeLetras.length-1; i++) {
+				if (sopaDeLetras[i][j] == palabraBuscada.charAt(0) && sopaDeLetras[i + 1][j] == palabraBuscada.charAt(1)
+					&& sopaDeLetras[i + 2][j] == palabraBuscada.charAt(2)) {
+					for (int k = i; k < i + palabraBuscada.length() && k < sopaDeLetras.length-1; k++) {
+						sopaDeLetras[k][j] = VACIO;
+					}
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Busca la palabra y la tacha con vacio
+	 * 
+	 * @param sopaDeLetras
+	 * @param palabraBuscada
+	 * @return true, si la encuntra false, si no la encunetra
+	 */
+	public static boolean buscarHorizontalInvertida(char sopaDeLetras[][], String palabraBuscada) {
+		int i = 0, j = 0;
+		final char VACIO = '-';
+
+		for (i = 0; i < sopaDeLetras.length; i++) {
+			for (j = sopaDeLetras[0].length - 1; j >= 1; j--) {
+				if (sopaDeLetras[i][j] == palabraBuscada.charAt(0) && sopaDeLetras[i][j - 1] == palabraBuscada.charAt(1)
+						&& sopaDeLetras[i][j - 2] == palabraBuscada.charAt(2)) {
+					for (int k = j; k >= j - palabraBuscada.length() + 1 && k >= 1; k--) {
+						sopaDeLetras[i][k] = VACIO;
+					}
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Busca la palabra y la tacha con vacio
+	 * 
+	 * @param sopaDeLetras
+	 * @param palabraBuscada
+	 * @return true, si la encuntra false, si no la encunetra
+	 */
+	public static boolean buscarHorizontalNormal(char sopaDeLetras[][], String palabraBuscada) {
+		int i = 0, j = 0;
+		final char VACIO = '-';
+
+		for (i = 0; i < sopaDeLetras.length; i++) {
+			for (j = 0; j < sopaDeLetras[0].length - 1; j++) {
+				if (sopaDeLetras[i][j] == palabraBuscada.charAt(0) && sopaDeLetras[i][j + 1] == palabraBuscada.charAt(1)
+						&& sopaDeLetras[i][j + 2] == palabraBuscada.charAt(2)) {
+					for (int k = j; k < j + palabraBuscada.length() && k < sopaDeLetras[0].length-1; k++) {
+						sopaDeLetras[i][k] = VACIO;
+					}
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Rellena la sopa de letras de carcateres en mayúscula aleatorios.
+	 * 
+	 * @param sopaDeLetras
+	 */
+	public static void rellenarDeLetrasAscii(char sopaDeLetras[][]) {
+		int i = 0, j = 0;
+
+		for (i = 0; i < sopaDeLetras.length; i++) {
+			for (j = 0; j < sopaDeLetras[0].length; j++) {
+				if (sopaDeLetras[i][j] == '-') {
+					int letraAscii = (int) (Math.random() * ('Z' - 'A' + 1)) + ('A');
+					sopaDeLetras[i][j] = (char) letraAscii;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Rellena una sopa de letra Según lo que encuntre en ella
+	 * 
+	 * @param sopaDeLetras
+	 */
+	public static void generarSopa(char sopaDeLetras[][]) {
+		int i = 0, j = 0;
+
+		System.out.print("┌");
+		System.out.print("────────────────────────────────────");
+		System.out.println("┐");
+		for (i = 0; i < sopaDeLetras.length; i++) {
+			System.out.print("|    ");
+			for (j = 0; j < sopaDeLetras[0].length; j++) {
+				System.out.print(sopaDeLetras[i][j] + "  ");
+			}
+			System.out.println("  |");
+		}
+		System.out.print("└");
+		System.out.print("────────────────────────────────────");
+		System.out.println("┘");
+	}
+
+	/**
+	 * Coloca la palabra en caso HorizontalNormal o en caso horizontalInvertida
+	 * 
+	 * @param fila
+	 * @param columna
+	 * @param sopaDeLetras
+	 * @param palabra
+	 * @param caso
+	 */
+	public static void colocarPalabraHorizontal(int fila, int columna, char sopaDeLetras[][], String palabra,
+			int caso) {
+		int i = 0, j = 0;
+		final int horizontalNormal = 1, horizontalInvertida = 2;
+
+		switch (caso) {
+		case horizontalNormal:
+			// 1 palabra en dirección horizontal normal (de izquierda a derecha).
+			i = 0;
+			for (j = columna; j < columna + palabra.length();) {
+				sopaDeLetras[fila][j++] = palabra.charAt(i++);
+			}
+			break;
+		case horizontalInvertida:
+			// 1 palabra en dirección horizontal invertida ( de derecha a izquierda).
+			i = palabra.length() - 1;
+			for (j = columna; j < columna + palabra.length();) {
+				sopaDeLetras[fila][j++] = palabra.charAt(i--);
+			}
+			break;
+		}
+	}
+
+	/**
+	 * Coloca la palabra en caso verticalNormal o en caso verticalInvertida
+	 * 
+	 * @param fila
+	 * @param columna
+	 * @param sopaDeLetras
+	 * @param palabra
+	 * @param caso
+	 */
+	public static void colocarPalabraVertical(int fila, int columna, char sopaDeLetras[][], String palabra, int caso) {
+		int i = 0, j = 0;
+		final int verticalNormal = 3, VerticalInvertida = 4;
+
+		switch (caso) {
+		case verticalNormal:
+			// 1 palabra en dirección vertical normal (de arriba a abajo).
+			j = 0;
+			for (i = fila; i < fila + palabra.length();) {
+				sopaDeLetras[i++][columna] = palabra.charAt(j++);
+			}
+			break;
+		case VerticalInvertida:
+			// 1 palabra en dirección vertical invertida (de abajo a arriba).
+			j = palabra.length() - 1;
+			for (i = fila; i < fila + palabra.length();) {
+				sopaDeLetras[i++][columna] = palabra.charAt(j--);
+			}
+			break;
+		}
+	}
+
+	/**
+	 * Verifica si la palabra que se va a colocar de forma horizontal cuenta con los
+	 * espacios para poscionarse
+	 * 
+	 * @param fila
+	 * @param columna
+	 * @param palabra
+	 * @param sopaDeLetras
+	 * @return la cantidad entera de espacios encontrados
+	 * 
+	 */
+	public static int sePuedeColocarPalabraHorizontal(int fila, int columna, String palabra, char sopaDeLetras[][]) {
+		int contador = 0, j = 0;
+
+		for (j = columna; j < columna + palabra.length() && j < sopaDeLetras[0].length; j++) {
+			if (sopaDeLetras[fila][j] == '-' && contador < sopaDeLetras[0].length) {
+				contador++;
+			}
+		}
+		return contador;
+	}
+
+	/**
+	 * Verifica si la palabra que se va a colocar de forma vertical cuenta con los
+	 * espacios para poscionarse
+	 * 
+	 * @param fila
+	 * @param columna
+	 * @param palabra
+	 * @param sopaDeLetras
+	 * @return la cantidad entera de espacios encontrados
+	 * 
+	 */
+	public static int sePuedeColocarPalabraVertical(int fila, int columna, String palabra, char sopaDeLetras[][]) {
+		int contador = 0, i = 0;
+
+		for (i = fila; i < fila + palabra.length() && i < sopaDeLetras.length;) {
+			if (sopaDeLetras[i++][columna] == '-' && contador < sopaDeLetras.length) {
+				contador++;
+			}
+		}
+		return contador;
+	}
+
+	/**
+	 * Verifica si la columna más la longitud de la palabra es mayor a la cantidad
+	 * de columnas de la sopa de letras
+	 * 
+	 * @param fila
+	 * @param palabra
+	 * @param sopaDeLetras
+	 * @return true, si es menor false, si es mayor
+	 */
+	public static boolean revisionHorizontal(int columna, String palabra, char sopaDeLetras[][]) {
+		if ((columna + palabra.length()) < sopaDeLetras[0].length) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Verifica si la filamás la longitud de la palabra es mayor a la cantidad de
+	 * filas de la sopa de letras
+	 * 
+	 * @param fila
+	 * @param palabra
+	 * @param sopaDeLetras
+	 * @return true, si es menor false, si es mayor
+	 */
+	public static boolean revisionVertical(int fila, String palabra, char sopaDeLetras[][]) {
+		if ((fila + palabra.length()) < sopaDeLetras.length) {
+			return true;
+		}
+		return false;
+	}
+
+}
