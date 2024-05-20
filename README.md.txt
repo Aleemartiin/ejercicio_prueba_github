@@ -12,4 +12,6 @@ mundo-en-java.
 # BDFarmacia en java.
 Programa para gestionar la bse de datos de una farmacia.
 
-Hola me llamo Peter parker y soy spiderman.
+
+Hola me llamo Peter parker y soy spiderman. Y alejandro martín (secreto).
+
